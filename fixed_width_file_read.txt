@@ -1,0 +1,28 @@
+
+                           
+input_excel = 'C:/Users/admin/PycharmProjects/DataComare/SrcData/input_file_schema.xlsx'
+data = pd.read_excel(input_excel, sheet_name='Input_schema')
+df = pd.DataFrame(data)  # df=pd.DataFrame(data,columns=['START_POSITION','END_POSITION'])
+# print (df)
+
+dict_col_specs = {} 
+dict_headers = {}  
+
+for index, row in df.iterrows():  #Parse per row in dataframe
+    if row[0] not in dict_headers:  
+        dict_headers[row[0]] = [row[1]]
+    else:                           
+        dict_headers[row[0]].append(row[1])
+
+    if row[0] not in dict_col_specs:
+        dict_col_specs[row[0]] = [(row[2], row[3])]
+    else:
+        dict_col_specs[row[0]].append((row[2], row[3]))
+print("headers", dict_headers)
+print("col specs", dict_col_specs)
+
+for filename, header in dict_headers.items():   
+    col_specification = dict_col_specs[filename]  
+    data = pd.read_fwf(filename, colspecs=col_specification, names=header, index=True)
+    print(data)
+
